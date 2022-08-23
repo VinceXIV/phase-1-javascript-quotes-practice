@@ -25,8 +25,13 @@ function populateDomWithQuotes(){
         
 
         const domLikeButtons = document.querySelectorAll('.like-button')
+        const domDeleteButtons = document.querySelectorAll('.delete-button')
+
         for(btn of domLikeButtons){
             handleLikeButton(btn)
+        }
+        for(btn of domDeleteButtons){
+            handleDeleteButton(btn)
         }
     })
 }
@@ -120,6 +125,26 @@ function updateDomQuotes(quote){
     </blockquote>`
 
     domQuoteList.append(domQuoteCard)
-
+    handleDeleteButton(domQuoteCard.querySelector('button.delete-button'))
     return domQuoteCard
+}
+
+
+// HANDLE THE DELETE BUTTON
+function handleDeleteButton(btn){
+    const quoteId = btn.parentElement.id
+    btn.addEventListener('click', e=>{
+        console.log('I was clicked!')
+        fetch(`http://localhost:3000/quotes/${quoteId}`,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(result => result.json())
+        .then(()=>{
+            btn.parentElement.parentElement.remove()
+        })
+    })
 }
