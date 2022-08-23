@@ -3,7 +3,6 @@ fetch('http://localhost:3000/quotes?_embed=likes')
 .then(data => {
     const domQuoteList = document.getElementById('quote-list')
     data.forEach(quote =>{
-        console.log(quote)
         const domQuoteCard = document.createElement('li')
         domQuoteCard.classList.add('quote-card')
         domQuoteCard.innerHTML = `
@@ -11,7 +10,7 @@ fetch('http://localhost:3000/quotes?_embed=likes')
             <p class="mb-0">${quote.quote}</p>
             <footer class="blockquote-footer">${quote.author}</footer>
             <br>
-            <button class='btn-success'>Likes: <span>0</span></button>
+            <button class='btn-success'>Likes: <span>${quote.likes.length}</span></button>
             <button class='btn-danger'>Delete</button>
         </blockquote>`
 
