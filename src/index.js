@@ -15,5 +15,49 @@ fetch('http://localhost:3000/quotes?_embed=likes')
         </blockquote>`
 
         domQuoteList.append(domQuoteCard)
+
+function handleLikeButtons(){
+    const domLikeButtons = document.querySelectorAll('.like-button')
+
+    for(btn of domLikeButtons){
+        btn.addEventListener('click', e => {
+            const quoteId = getQuoteId(e.target.parentElement)
+            const newLikeObject = createLikeObject(quoteId)
+
+            fetch('http://localhost:3000/likes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(newLikeObject)
+            })
+            .then(result => result.json())
+            .then(data => updateDomNoOfLikes(data))
+        })
+    }
+}
+
+function getQuoteId(quote){
+    return quote.id;
+}
+
+function createLikeObject(quoteId){
+    return {
+        "quoteId": quoteId,
+        "createdAt":  (new Date()).getTime()
+    }
+}
+
+function updateDomNoOfLikes(data){
+    const domQuotes = Array.from(document.getElementsByClassName('blockquote'))
+    
+    const domQuoteToChange = domQuotes.find(quote =>{
+        return quote.id == data.quoteId
     })
-})
+    
+    // following lines of codes are for updating the number of likes (adding 1)
+    const currentNoOfLikes = parseInt(domQuoteToChange.querySelector('button.like-button span').textContent)
+    const updatedNoOfLikes = currentNoOfLikes + 1
+    domQuoteToChange.querySelector('button.like-button span').textContent = updatedNoOfLikes
+}
